@@ -201,6 +201,8 @@ const layout = admin ? 'custom' : 'default';
 </template>
 ```
 
+## NuxtLayoutコンポーネント
+
 <details>
 <summary>NuxtLayoutコンポーネント</summary>
 
@@ -240,15 +242,15 @@ definePageMeta({
 </template>
 ```
 
+補足
+app.vue ファイルは必須ではないので削除できる
+app.vue ファイルが存在しない場合には自動でデフォルトのレイアウトが適用される
 </details>
 
-補足
-
-app.vue ファイルは必須ではないので削除できる
-
-app.vue ファイルが存在しない場合には自動でデフォルトのレイアウトが適用される
 
 ## 動的にLayoutの変更
+<details>
+<summary>動的にLayoutの変更</summary>
 ページに適用するレイアウトを動的に変更したい場合に setPageLayout 関数を利用することもできます。
 
 最初は definePagaMeta 関数で layout を false に設定しているのでデフォルトのレイアウトが設定されていない状態です。画面上に表示される”Update layout”ボタンをクリックすると custom レイアウトが適用されます。レイアウトの適用に setPageLayout 関数を利用しています。
@@ -288,6 +290,8 @@ definePageMeta({
 </template>
 ```
 definePageMeta関数を利用しない場合はデフォルトのlayoutが適用されておりボタンをクリックするとcustomのレイアウトが適用されます。
+
+</details>
 
 ## 名前付きslotの設定
 app.vue ファイルを削除し layouts ディレクトリに default.vue ファイルが存在し index.vue ファイルにデフォルトのレイアウトが適用された状態で slot の設定の動作確認を行います。
