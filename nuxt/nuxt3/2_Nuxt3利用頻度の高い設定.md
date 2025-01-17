@@ -1,19 +1,10 @@
-# Nuxt3
-
-## Nuxt3概要
-Vue.jsをベースにしたフレームワーク
-Vue.jsのUIだけでなくSSRを含むレンダリング機能、metaタグ、ルーティング、エラーハンドリングなどの機能を事前に組み込むことでアプリケーション開発を効率的に行う。
-ルーティングであれば決められたディレクトリにファイルを作成するだけで自動でルーティングが設定される。
-コンポーネントを利用する場合にimport文を使わなくても自動でimportされる
-Typescriptもサポート
-
-## Nuxt3プロジェクトの作成と利用頻度の高い設定
+# Nuxt3プロジェクトの作成と利用頻度の高い設定
 [参考サイト](https://qiita.com/amishiro/items/478576fa1b21a224d81e)
 
-### Node.jsのインストール
+## Node.jsのインストール
 Node.js v18以上をインストール
 
-### Nuxtプロジェクトを作成
+## Nuxtプロジェクトを作成
 Nuxtをインストール
 ```
 % npx nuxi@latest init <project-name>
@@ -32,8 +23,9 @@ Nuxtをインストール
 % yarn run dev
 ```
 
-### envファイルの作成
+## envファイルの作成
 納品先ディレクトリを変更できるように.envファイルを作成
+
 プロジェクトルートに.envファイルを作成
 ```
 # .env
@@ -56,9 +48,9 @@ export default defineNuxtConfig({
 })
 ```
 
-
-### 本番環境・ステージング環境・開発環境で分けたい
+## 本番環境・ステージング環境・開発環境で分けたい
 nuxt3はdotenvが入っているためカスタムファイル（.env.localなど）が利用できます。各種envファイルを作成し、package.jsonへコマンドを登録しておきます。
+
 ```
 // package.json
 
@@ -76,7 +68,7 @@ nuxt3はdotenvが入っているためカスタムファイル（.env.localな�
 }
 ```
 
-### sassのインストール
+## sassのインストール
 sassをインストール
 ```
 % yarn add -D sass
@@ -110,7 +102,7 @@ export default defineNuxtConfig({
 })
 ```
 
-### 最低限のページ作成
+## 最低限のページ作成
 細かな設定をしていくにあたり必要なページの生成します。
 ```
 % mkdir pages/layouts
@@ -146,7 +138,7 @@ export default defineNuxtConfig({
 </template>
 ```
 
-### 404エラーページ
+## 404エラーページ
 generate時にerrorページを404.htmlファイルとして生成します。
 ```
 % touch error.vue
@@ -238,7 +230,7 @@ RewriteRule ^.*$ 404.html
 </IfModule>
 ```
 
-### SEO対策
+## SEO対策
 [@nuxtjs/seoの推奨構成](https://nuxtseo.com/docs/nuxt-seo/guides/using-the-modules)
 ```
 yarn add -D @nuxtjs/seo
@@ -269,12 +261,14 @@ export default defineNuxtConfig({
 yarn generateを実行してdistフォルダ内を確認すると、sitemap.xmlをはじめ、必要なファイル群が書き出されていることが確認できます。
 あとは、お好みで各種設定を追加していきます。
 
-### URL末尾にスラッシュを付与する
+## URL末尾にスラッシュを付与する
 Nuxtは、ディフォルトではURLの末尾に/がつきません。先ほどのnuxtjs/seoの設定で、trailingSlash: trueを追加することで末尾のスラッシュを強制できます。
+
 Tips：defineNuxtLinkのオプションでも末尾スラッシュの追加は可能ですが、こちらの方がお手軽です。
 
-### 本番環境・ステージング環境・開発環境で分けたい
+## 本番環境・ステージング環境・開発環境で分けたい
 urlをはじめとした環境ごとに違う設定を.envファイルで管理します。
+
 baseURLの項で作成した、.envのカスタムファイル（.env.local``.env.staging``.env.production）に以下を追記します。
 ```
 # .env.local | dev | staging | production
@@ -289,8 +283,9 @@ NUXT_SITE_URL=http://localhost:3000 # or https:staging.example.com | https://exa
 NUXT_SITE_ENV="local" # or | dev | staging| production
 ```
 
-### robots.txtの設定
+## robots.txtの設定
 [@nuxtjs/robots](https://nuxtseo.com/docs/robots/getting-started/installation)のドキュメントを参考に設定します…。が、ほとんど場合何もしなくて大丈夫です。後で調べ直さなくていいように、例を記載しておきます。
+
 注意点としては、NUXT_SITE_ENV === 'production’以外では<meta name="robots" content="noindex, nofollow"> が挿入されインデックスされません。書き出されたファイルをちゃんとチェックしないと、後で泣きます。
 ```
 // nuxt.config.ts
@@ -306,9 +301,11 @@ export default defineNuxtConfig({
 })
 ```
 
-### sitemap.xmlの設定
+## sitemap.xmlの設定
 [@nuxtjs/sitemap](https://nuxtseo.com/docs/sitemap/getting-started/installation)のドキュメントを参考に設定します…。が、こちらも、ほとんど場合何もしなくて大丈夫です。
+
 個人的に余分なファイルは出力したくないため、sitemap.xml用のスタイルシートとクレジットを無効化しておきます。
+
 Tips：robots.disallowで指定したパスはサイトマップに含まれないので安心です。
 ```
 // nuxt.config.ts
@@ -325,10 +322,13 @@ export default defineNuxtConfig({
 })
 ```
 
-### og:imageの設定
+## og:imageの設定
 [nuxt-og-image](https://nuxtseo.com/docs/og-image/getting-started/installation)のドキュメントを参考に設定します…。が、OGP画像の自動生成を実施するとパフォーマンスが重いため扱いに気をつけましょう。
+
 [@nuxt/content](https://content.nuxt.com/)の利用を想定している場合などはとても強力なツールですが、自動生成を利用しない場合は、素直にuseHeadやuseSeoMetaを利用した方が楽なので、プロジェクトに合わせて検討をしてください。
+
 Tips：2024/1/22現在、baseURLを指定してるとgenerate時にogp画像へのリンクが壊れます。今後の開発に期待。
+
 設定サンプルを記載しておきます。
 ```
 // nuxt.config.ts
@@ -385,8 +385,9 @@ defineOgImageComponent('Nuxt', {
 </script>
 ```
 
-### schema.orgの設定
+## schema.orgの設定
 [nuxt-schema-org](https://nuxtseo.com/docs/schema-org/getting-started/installation)のドキュメントを参考に設定します…。が、こちらも、ほとんど場合何もしなくて大丈夫です。設定するのは、組織のサイトか個人サイトかの指定部分ぐらいでしょうか？
+
 参考：[ページ詳細の設定](https://nuxtseo.com/docs/schema-org/guides/nodes)
 ```
 // nuxt.config.ts
@@ -401,11 +402,13 @@ export default defineNuxtConfig({
 })
 ```
 
-### Nuxt/Seoのその他機能
+## Nuxt/Seoのその他機能
 [Nuxt Link Checker](https://nuxtseo.com/docs/link-checker/getting-started/installation)
 リンクやURLのチェックをしてくれます。個人的には細かく設定してチェックをしたいのだけど、プロジェクト毎に変わるので割愛。
+
 Nuxt SEO Experiments
 実験的機能なので割愛。個人的には好きな方向性でもパフォーマンス重そう。
+
 ディフォルトが「有効」になっているので、両方とも無効化する。
 
 ```
@@ -421,8 +424,9 @@ export default defineNuxtConfig({
 })
 ```
 
-### favicon.icn
+## favicon.icn
 nuxtのディフォルト機能で設定します。
+
 各種ブラウザ用のファビコンfavicon.iconを作成し、staticディレクトリ直下へ設置します。
 ```
 // nuxt.config.ts
@@ -446,7 +450,7 @@ export default defineNuxtConfig({
 })
 ```
 
-### GTMの設置
+## GTMの設置
 [@zadigetvoltaire/nuxt-gtm](https://nuxt.com/modules/nuxt-gtm)のドキュメントを参考に設定します…。が、こちらも、ほとんど場合何もしなくて大丈夫です。でも、IDは必須です。
 ```
 % yarn add -D @zadigetvoltaire/nuxt-gtm
@@ -469,6 +473,7 @@ module.exports = {
 }
 ```
 gtmを利用した広告関連のためにタイトルとパスを渡す必要が出てくることがあります。
+
 GTMへのイベント発行用composableを記載しておきます。
 ↓
 ```
@@ -502,10 +507,10 @@ export const gtmEvent = (options: GtmEventOptions) => {
 }
 ```
 
-### GAの場合
+## GAの場合
 [Nuxt Gtag](https://nuxt.com/modules/gtag)を参照してください。
 
-### ハッシュリンクのスクロール動作
+## ハッシュリンクのスクロール動作
 [ドキュメント](https://nuxt.com/docs/guide/recipes/custom-routing#scroll-behavior-for-hash-links)を参考に入れてください。
 ```
 // nuxt.config.ts
