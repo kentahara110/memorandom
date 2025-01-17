@@ -31,9 +31,8 @@ CSSの正しい設定方法を忘れてしまう。Media Query, Gridの設定な
 
 便利な反面、scssなどと併用するとスタイルの記述がやや複雑になり、可読性とメンテナンス性が落ちるため、利用は最低限にするなどルールを決めておきたい
 
-:::note warn
-Tailwind CSSを導入しない選択もあり
-:::
+**Tailwind CSSを導入しない選択もあり**
+
 
 # Tailwind CSSをnuxt3プロジェクトに導入する
 [参考サイト](https://qiita.com/keitaMax/items/1a28eea86f163fd2952f)
@@ -43,7 +42,6 @@ Tailwind CSSを導入しない選択もあり
 ```
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init
-
 ```
 
 ## Tailwind CSSを使用できるようにする
@@ -64,7 +62,6 @@ export default {
   },
   plugins: [],
 };
-
 ```
 
 次に、assets/css/フォルダを作成し、その中にmain.cssファイルを作成します。
@@ -73,7 +70,6 @@ export default {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 ```
 
 nuxt.config.jsファイルを以下のように修正します。
@@ -90,13 +86,11 @@ export default defineNuxtConfig({
   },     //追加
   ...
 });
-
 ```
 
 これでTailwind CSSが適応できているので確認
 ```
 yarn dev
-
 ```
 
 ## ブレークポイントを設定する
