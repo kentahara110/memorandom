@@ -502,7 +502,7 @@ export default defineNuxtConfig({
 ```
 
 ## 画像のファイルの保存
-画像ファイルを assets ディレクトリに保存します。ここでは icon.png ファイルを assets フォルダの直下に」保存しています。Nuxtに関する画像は(https://nuxt.com/design-kit)からダウンロードすることができます。
+画像ファイルを assets ディレクトリに保存します。ここでは icon.png ファイルを assets フォルダの直下に」保存しています。Nuxtに関する画像は[https://nuxt.com/design-kit]からダウンロードすることができます。
 
 index.vue ファイルから img タグを利用して assets ディレクトリの icon.png ファイルを指定しますがパスの先頭には”~”が必要となります。
 
@@ -1112,7 +1112,7 @@ const counter = useCounter();
 ```
 
 ## Modules
-Nuxt3ではModulesを利用することでNuxtプロジェクトに簡単に機能の追加を行うことができます。Nuxt3で利用できるモジュールは(https://nuxt.com/modules)で確認することができます。
+Nuxt3ではModulesを利用することでNuxtプロジェクトに簡単に機能の追加を行うことができます。Nuxt3で利用できるモジュールは[https://nuxt.com/modules]で確認することができます。
 
 ## Data Fetching
 アプリケーションを構築する場合に Data Fetching によりデータを取得し取得したデータをブラウザ上に表示させる必要があります。Nuxt 3 ではデータを取得するためのComposablesが事前に準備されているためそれらのComposablesを利用することができます。Nuxt 3 で利用できるデータ取得に関するComposablesは useFetch, useLazyFetch, useAsyncData, useLazyAsyncData の 4 つです。4つ以外に$fetchも利用されます。ここではそれぞれの利用方法を確認していきます。
@@ -1130,7 +1130,7 @@ useFetch is the most straightforward way to handle data fetching in a component 
 
 フォームなどのPOSTリクエストでuseFetchを利用した場合はブラウザのデベロッパーコンソールに`”index.vue:6 [nuxt] [useFetch] Component is already mounted, please use $fetch instead.”`のメッセージが表示され$fetchを利用するように促されます。上記のメッセージが表示された場合は**useFetchの利用場所として適切ではない**ことがわかります。
 
-posts ディレクトリを作成して index.vue ファイルを作成して useFetch composablesを利用して無料で利用できる JSONPlaceHolder からデータを取得します。利用する URL は’(https://jsonplaceholder.typicode.com/posts/)‘でアクセスすると100件のPostデータが取得できます。
+posts ディレクトリを作成して index.vue ファイルを作成して useFetch composablesを利用して無料で利用できる JSONPlaceHolder からデータを取得します。利用する URL は[https://jsonplaceholder.typicode.com/posts/]でアクセスすると100件のPostデータが取得できます。
 
 useFetch を利用してどのようなデータが戻されるのか確認を行います。
 ```
