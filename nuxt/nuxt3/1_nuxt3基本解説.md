@@ -48,12 +48,15 @@ app.vueファイルはNuxt 3のメインコンポーネントです。
 
 バンドルサイズが小さくなることでクライアントが受け取るデータ量も減るためページの表示速度の高速化につながります。
 
-## app.vue以外のファイル
+## 補足　app.vue以外のファイル
+<details>
+<summary>app.vue以外のファイル</summary>
 app.vue ファイル以外に nuxt.config.ts, tsconfig.json, README.md, package.jsonファイルなどがあります。
 
 nuxt.config.tsはNuxtに関する設定を行うことができるファイルで本文書でもnuxt.config.tsファイルを利用して設定を行います。拡張子が ts となっている通りデフォルトから TypeScript に対応しています。
 
 tsconfig.json は TypeScript の一般的な設定ファイルです。README.mdはインストールコマンドなどの説明が記述されています。
+</details>
 
 ## ディレクトリ構成
 Nuxt 3ではプロジェクト作成時に node_modules, public, server 以外のディレクトリは存在しませんがそれぞれ異なる役割を持っているディレクトリを追加していくことでアプリケーションを構築していきます。
@@ -391,7 +394,10 @@ app.vue ファイルは削除して layouts ディレクトリに default.vue �
 
 設定後は上部にリンクが表示されます。Home、Aboutそれぞれにaタグでリンクが貼られているのでクリックするとページの移動を行うことができます。
 
-## ComponentsのLazy Loading(遅延読み込み)
+## 補足　ComponentsのLazy Loading(遅延読み込み)
+<details>
+<summary>ComponentsのLazy Loading(遅延読み込み)</summary>
+
 Nuxt のコンポーネントは Lazy Loading という機能を持っているため必要な時だけ Lazy Loading を設定したコンポーネントに対応する JavaScript ファイルをダウンロードすることができます。Lazy Loading の機能を利用することで ページアクセス時にダウンロードするJavaScript のサイズを小さくすることができます。Lazy LoadingはDynamic Importsとも呼ばれます。
 
 コンポーネントの Lazy Loading を利用した時としない時の動作をネットワークタブを見ながら確認します。
@@ -448,6 +454,8 @@ const handleClick = () => {
 ページを開いてネットワークタブを見ても Copon.vue ファイルは見つかりません。ページ上の”Coupon Get”ボタンをクリックしてください。ボタンをクリックした後にネットワークタブを見ると最後に Coupon.vue ファイルが追加されることがわかります。このように Lazy Loading を利用することでコンポーネントが必要な時のみLazy Loadingを設定したコンポーネントに関連するJavaScriptファイルをダウンロードさせることができます。
 
 Lazy Loadingの動作確認が終わったらindex.vueファイルを元のコードに戻しておきます。
+
+</details>
 
 ## ナビゲーション設定
 a タグを利用してもページを移動することはできますが a タグではページを移動する度にページの再読み込みが行われます。クリックする度にページ全体を読み込みをするのではなくページの中で更新が必要な箇所だけ更新が行われるように a タグから NuxtLink コンポーネントを利用するために NuxtLink タグに変更します。
@@ -620,9 +628,6 @@ const { $hello } = useNuxtApp();
 </template>
 ```
 ブラウザにはプラグインhelloを利用したHello World!が表示されます。
-
-## ルーティングの設定
-pagesディレクトリのindex.vue, about.vueファイルを作成して自動でルーティングが設定されることを確認していますが階層ページなどルーティングの設定についてさらに詳しく確認しておきます。
 
 ## 階層ページの作成
 About ページは pages ディレクトリの直下に about.vue ファイルを作成してブラウザから URL の/about でアクセスすることで About ページの内容を表示することができました。次は URL が/users/list というように階層になっている場合のルーティング方法について確認します。
@@ -810,3 +815,586 @@ definePageMeta({
   </div>
 </template>
 ```
+
+## Page Transitions
+ページを移動する際にアニメーションを設定したい場合にPage Transitionsを利用することができます。
+
+Nuxtの設定ファイルであるnuxt.config.tsファイルのappプロパティにpageTransitionを追加します。ページ移動のモードの設定も行います。
+
+```
+// nuxt.config.ts
+export default defineNuxtConfig({
+  // css: ['/assets/css/style.css'],
+  app: {
+    ...
+    pageTransition: { name: 'page', mode: 'out-in' },
+    ...
+  },
+});
+```
+設定後にapp.vueファイルにstyleを設定しますがapp.vueファイルを利用していない場合にはレイアウトファイルに設定します。
+```
+// layouts/default.vue
+<template>
+  <div>
+    <Navbar />
+    <slot />
+  </div>
+</template>
+<script setup></script>
+<style>
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.4s;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}
+</style>
+```
+
+ページ上部のナビゲーションバーを利用してページを移動するとblurによる少し文字にぼかしが入り通常よりもゆっくりと文字が画面に表示されます。
+
+Page Tranditionは設定するだけではなくページ単位またはアプリケーション全体でPage Transitionの設定を無効にすることができます。
+
+ページ単位の場合はdefinePageMeta関数で設定を行います。
+```
+// pages/about.vue
+<script setup lang="ts">
+definePageMeta({
+  pageTransition: false
+})
+</script>
+```
+アプリケーション全体ではNuxtの設定ファイルであるnuxt.config.tsファイルで設定します。
+```
+defineNuxtConfig({
+  ...
+  app: {
+    pageTransition: false,
+  }
+  ...
+}
+)
+```
+
+## Meta Tagsの設定
+構築したアプリケーションのページを検索エンジンに正しく認識してもらうためには SEO(Search Engine Optimization)への対応が必要になります。HtmlのMeta タグを設定することはSEOにとっても非常に重要なのでNuxt 3でのMeta タグの設定方法を確認します。
+
+アプリケーション全体のMetaタグ設定は Nuxt の設定ファイルである nuxt.config.ts ファイルの app.head で行うことができます。アプリケーション全体に設定するとすべてページが同じ Meta タグになってしまうため、Meta タグはページ毎にも設定する必要がありその場合には composables の useHead 関数を利用することができます。さらにuseSeoMetaではSEO用のタグを設定することができます。
+
+プロジェクト作成時には nuxt.config.ts、useHead 関数による Meta タグの設定は行われていませんが head タグを確認するとデフォルトの状態では charset が”utf-8”, viewport が”width=device-width, initial-scale=1”に設定されています。
+
+### nuxt.config.tsによる設定
+faviconsの設定の時にtitleとmetaタグでdescriptionを設定しましたが再度確認しておきます。
+```
+export default defineNuxtConfig({
+  app: {
+    head: {
+      title: 'Nuxt 3 basic',
+      meta: [{ name: 'description', content: 'Nuxt 3 for beginners' }],
+      link: [{ rel: 'icon', href: '/icon.png' }],
+    },
+  },
+});
+```
+nuxt.config.tsで設定した場合にはすべてのページで同じ内容が設定されている状態です。
+
+### useHeadによる設定
+scriptタグの中でComposableのuseMeta関数を利用をしてtitle, base, script, style, metaとlinkを設定することができます。ここではtitleとmetaのdescriptionの設定のみabout.vueファイルで行います。他のmetaタグの設定についても同様の方法で行うことができます。
+```
+// pages/about.vue
+<template>
+  <div>
+    <h1>About Page</h1>
+  </div>
+</template>
+<script setup>
+useHead({
+  title: 'Aboutページ',
+  meta: [
+    {
+      name: 'description',
+      content: 'Aboutページ',
+    },
+  ],
+});
+</script>
+```
+
+useHeadの設定はref関数によって動的に設定を行うこともできます。ref関数でtitleとdescriptionを定義しています。
+```
+// pages/about.vue
+<template>
+  <div>
+    <h1>About Page</h1>
+  </div>
+</template>
+<script setup>
+const title = ref('Aboutページ');
+const description = ref('Aboutページ');
+useHead({
+  title,
+  meta: [
+    {
+      name: 'description',
+      content: description,
+    },
+  ],
+});
+</script>
+```
+
+各ページでtitleにサイト名などを含めたい場合はtitleTemplateを利用することができます。
+
+app.vueファイル、レイアウトファイルでもuseHead関数を利用することができるのでlayousディレクトリのdefault.vueファイルにtitleTemplateに関数を利用して以下のように設定します。
+```
+// layouts/default.vue
+<template>
+  <div>
+    <Navbar />
+    <slot />
+  </div>
+</template>
+<script setup>
+useHead({
+  titleTemplate: (title) => {
+    return title ? `${title} - Nuxt 3 basic` : 'Nuxt 3 basic';
+  },
+});
+</script>
+```
+
+Dynamicルーティングで確認したidを設定する場合は下記のように行うことができます。
+```
+// pagees/[ID].vue
+<script setup>
+const router = useRoute();
+useMeta({
+  title: 'Nuxt 3',
+  meta: [
+    {
+      name: 'description',
+      content: `User Id: ${router.params.id}`,
+    },
+  ],
+});
+</script>
+<template>
+  <p>ユーザID: {{ $route.params.id }}</p>
+</template>
+```
+titleTemplateで関数を利用しない場合はtitleの箇所に%sを設定することでtitleが設定されます。
+```
+useHead({
+  titleTemplate: '%s - Nuxt 3 basic',
+});
+```
+
+### Meta Componentsによる設定
+Nuxt 3では`<Title>, <Base>, <Script>, <Style>, <Meta> , <Link>, <Body>, <HTML><Head>`タグを利用することができます。useHeadと同様にtitleとdescriptionを設定するのであれば下記のように行うことができます。
+```
+<template>
+  <div>
+    <Head>
+      <Title>Aboutページ</Title>
+      <Meta name="description" content="Aboutページ" />
+    </Head>
+    <h1>About Page</h1>
+  </div>
+</template>
+<script setup></script>
+```
+レイアウトファイルに設定するとそのレイアウトファイルを利用するページすべてで設定が反映されます。
+
+## useState
+コンポーネント間やページ間で状態管理(データ共有)したい場合に composables の useState を利用することができます。useState はシンプルな状態管理に利用することができより複雑な状態管理であればライブラリの Pinia を利用することになります。
+
+状態管理とはどのようなことかを理解するために ref 関数を利用した場合と比較します。
+
+about.vue ファイルを利用して ref 関数で counter を定義します。ボタンにより counter の数を増やせるように設定を行います。
+```
+<template>
+  <div>
+    <Head>
+      <Title>Aboutページ</Title>
+      <Meta name="description" content="Aboutページ" />
+    </Head>
+    <h1>About Page</h1>
+    <h2>Counter</h2>
+    <p>Count: {{ counter }}</p>
+    <div><button @click="counter++">+</button></div>
+  </div>
+</template>
+<script setup>
+const counter = ref(0);
+</script>
+```
+Countを増やした後上部のリンクを利用して別のページに移動して再度aboutページに戻ってきてください。ブラウザ上のCountの値をクリアされて0と表示されます。このようにref関数ではページ間の移動を行うと値がクリアされ保持することができません。
+
+ページを移動してもcountの値を保持したい場合にuseStateを利用することができます。
+```
+<script setup>
+const counter = useState('counter', () => 0);
+</script>
+```
+useStateの第一引数にkeyのcounterを設定して初期値として関数で0を戻しています。keyを設定することで後ほど別のページから共有したcounterにアクセスします。
+
+ボタンをクリックして別のページに移動し再度aboutページに戻ってきてください。先ほどのref関数とは異なりcountの値が保持されていることが確認できます。
+
+1つのページ内ではページを移動してもuseStateにより状態が保持できることがわかりました。
+
+次は別のページからもcounterの値にアクセスできるか確認します。users.vueファイルを使って先ほど設定したキーのcounterとuseStateを利用します。
+
+補足　counterはref関数なのでscriptタグ内でcounterの値を確認したい場合はcounter.valueでアクセスすることができます。
+```
+// pages/users.vue
+<template>
+  <div>
+    <h1>Usersページ</h1>
+    <p>Count:{{ counter }}</p>
+    <NuxtPage />
+  </div>
+</template>
+<script setup>
+const counter = useState('counter');
+</script>
+```
+aboutページでボタンをクリックしてcountを増やした後に/users/listページにリンクから移動します。ユーザリストページでもcountの値が保持できていることが確認できます。useStateによって状態の保持とコンポーネント間でのデータ共有が行えることがわかりました。
+
+
+リンクによりaboutページからの移動ではなく/users/listページに直接アクセスを行ってください。/users/listページを開いた状態でブラウザのリロードでも問題ありません。
+
+ブラウザで確認するとcountの値が入っていない状態でブラウザ上に表示されます。この時の値はundefinedです。定義がされていないために表示されていません。
+
+この後、リンクを利用してaboutページに移動して戻ってくるとCounterの値が表示されます。このようにuseStateを利用した場合は定義しているコンポーネントで最初に状態の初期化を行う必要があります。
+
+この問題を回避するためにcounter用のcomposablesを作成します。composablesディレクトリのuseCounter.tsファイルをuseStateを利用して書き換えます。useCounter.tsファイルがない場合は作成してください。
+```
+// composables/useCounter.ts
+export function useCounter() {
+  return useState(() => 0);
+}
+```
+useCounter.tsファイルを作成後、aboutページからuseCounterを利用します。counterの初期値の0が表示され、ボタンをクリックするとcountの値が増えます。
+```
+<template>
+  <div>
+    <Head>
+      <Title>Aboutページ</Title>
+      <Meta name="description" content="Aboutページ" />
+    </Head>
+    <h1>About Page</h1>
+    <h2>Counter</h2>
+    <p>Count: {{ counter }}</p>
+    <div><button @click="counter++">+</button></div>
+  </div>
+</template>
+<script setup>
+const counter = useCounter();
+</script>
+```
+users.vueファイルでも同様にuseCounterを利用します。composablesでuseCounterを定義することでどのコンポーネントからcounterの値が取得できるようになります。/users/listに最初にアクセスしてもcounterの値は表示されます。
+```
+// pages/users.vue
+<template>
+  <div>
+    <h1>Usersページ</h1>
+    <p>Count:{{ counter }}</p>
+    <NuxtPage />
+  </div>
+</template>
+<script setup>
+const counter = useCounter();
+</script>
+```
+
+## Modules
+Nuxt3ではModulesを利用することでNuxtプロジェクトに簡単に機能の追加を行うことができます。Nuxt3で利用できるモジュールは(https://nuxt.com/modules)で確認することができます。
+
+## Data Fetching
+アプリケーションを構築する場合に Data Fetching によりデータを取得し取得したデータをブラウザ上に表示させる必要があります。Nuxt 3 ではデータを取得するためのComposablesが事前に準備されているためそれらのComposablesを利用することができます。Nuxt 3 で利用できるデータ取得に関するComposablesは useFetch, useLazyFetch, useAsyncData, useLazyAsyncData の 4 つです。4つ以外に$fetchも利用されます。ここではそれぞれの利用方法を確認していきます。
+
+useFetchなどのComposablesを利用するメリットには以下のようなものがあります。
+
+useFetchはServer Side Rendering(SSR)に対応しており、サーバ側でfetchにより取得したデータをクライアント側であるブラウザに渡します。これによりクライアント側でfetchを行う必要がなくなります。useFetchの代わりにfetch関数を利用するとSSRに対応していないためサーバ側とクライアント側で2度fetchを行います。
+useFetchで戻されるデータはリアクティブなデータなのでref関数で定義したリアクティブな変数に取得したデータを入れるといった処理が必要ありません。
+useFetchでは戻されるデータの中にエラーなどの情報も含まれているためエラーハンドリングの処理なども用意に行うことができます。
+
+### useFetch
+useFetchはPromise を返すcomposablesで GET リクエストであれば引数に URL を指定するだけで指定したURLからデータを取得することができます。useFetchの利用場所はドキュメントでは下記のように記載されています。
+
+useFetch is the most straightforward way to handle data fetching in a component setup function.
+
+フォームなどのPOSTリクエストでuseFetchを利用した場合はブラウザのデベロッパーコンソールに`”index.vue:6 [nuxt] [useFetch] Component is already mounted, please use $fetch instead.”`のメッセージが表示され$fetchを利用するように促されます。上記のメッセージが表示された場合は**useFetchの利用場所として適切ではない**ことがわかります。
+
+posts ディレクトリを作成して index.vue ファイルを作成して useFetch composablesを利用して無料で利用できる JSONPlaceHolder からデータを取得します。利用する URL は’(https://jsonplaceholder.typicode.com/posts/)‘でアクセスすると100件のPostデータが取得できます。
+
+useFetch を利用してどのようなデータが戻されるのか確認を行います。
+```
+// pages/posts/index.vue
+<script setup>
+const response = await useFetch('https://jsonplaceholder.typicode.com/posts/');
+console.log(response);
+</script>
+<template>
+  <div>
+    <h1>Posts一覧</h1>
+  </div>
+</template>
+```
+`/posts`にブラウザからアクセスするとブラウザのデベロッパーツールのコンソールにはuseFetch関数の実行によって戻される情報が表示されます。
+
+戻されたデータの中には data の他にclear, error, pending, execute, refresh,status が含まれていることがわかります。
+
+コンソールのメッセージの情報から data, error, pending, status は RefImp と表示されていることからリアクティブな状態で戻されていることがわかります。ref 関数で変数を定義した時と同じなので script setupタグ内では data.value で data に含まれる情報にアクセスすることができます。残りの execute, refresh, clear は関数です。
+
+data には取得したデータ、error にはエラーメッセージ(エラーがある場合)、pending にはデータの取得中かどうか Boolean 値が含まれています。execute, refresh は関数なので実行することができ、実行すると再度データ取得を行うことができます。
+
+data には 100 件の Post データ含まれているので分割代入で data のみ取り出して data にはわかりやすいように posts という別名をつけて v-for ディレクティブで展開しブラウザ上にタイトルを表示させます。
+```
+// pages/posts/index.vue
+<script setup>
+const { data: posts } = await useFetch(
+  'https://jsonplaceholder.typicode.com/posts/'
+);
+</script>
+<template>
+  <div>
+    <h1>Posts一覧</h1>
+    <ul>
+      <li v-for="post in posts" :key="post.id">{{ post.title }}</li>
+    </ul>
+  </div>
+</template>
+```
+
+dataだけではなくerrorの内容も確認します。errorの中身はscriptタグ内ではerror.valueで確認することができます。
+```
+// pages/posts/index.vue
+<script setup>
+const { data: posts, error } = await useFetch(
+  'https://jsonplaceholder.typicode.com/post/'
+);
+</script>
+<template>
+  <div>
+    <h1>Posts一覧</h1>
+    <p v-if="error">{{ error }}</p>
+    <ul>
+      <li v-for="post in posts" :key="post.id">{{ post.title }}</li>
+    </ul>
+  </div>
+</template>
+```
+
+ブラウザ上にエラーメッセージを表示
+refresh関数を利用してデータの再取得を行うため再取得ボタンを追加します。ボタンをクリックするとrefresh関数が実行され再取得が行われます。JSONPLaceHolder上のデータに変更がないため再取得しても画面上には変化がありませんがデベロッパーツールのネットワークタブを見るとリクエストが送信されrefresh関数が動作していることを確認することができます。
+```
+<script setup>
+const {
+  data: posts,
+  error,
+  refresh,
+} = await useFetch('https://jsonplaceholder.typicode.com/posts/');
+
+</script>
+<template>
+  <div>
+    <h1>Posts一覧</h1>
+    <button @click="refresh()">再取得</button>
+    <p v-if="error">{{ error }}</p>
+    <ul>
+      <li v-for="post in posts" :key="post.id">{{ post.title }}</li>
+    </ul>
+  </div>
+</template>
+```
+pendingについてはuseLazyFetch関数の箇所で確認します。
+
+### useAsyncData
+useFetch関数はuseAsyncData関数と$fetch関数の利用を便利にしたラッパーです。そのためuseFetch関数と同じ処理をuseAsyncData関数と$fetch関数を使って行うことできます。
+
+useFetch関数をuseAsyncData関数と$fetch関数で書き換えると以下のコードになります。
+```
+<script setup>
+const { data: posts, error } = await useAsyncData('posts', () =>
+  $fetch('https://jsonplaceholder.typicode.com/posts/')
+);
+</script>
+<template>
+  <div>
+    <h1>Posts一覧</h1>
+    <p v-if="error">{{ error }}</p>
+    <ul>
+      <li v-for="post in posts" :key="post.id">{{ post.title }}</li>
+    </ul>
+  </div>
+</template>
+```
+
+useFetch の中では$fetchが利用されますがuseAsyncDataでは$fetch を利用せず別の関数に変更することができます。useFetch とは異なり第二引数の関数の中で処理を追加することもできます。つまり useFetch よりも useAsyncData を利用することで複雑な処理が行えるようになります。
+```
+const { data: posts, error } = await useAsyncData('posts', () => {
+  console.log('fetch'); //追加の処理
+  return $fetch('https://jsonplaceholder.typicode.com/posts/');
+});
+```
+
+useAsyncData の第一引数にはキャッシュに利用されるユニークキーを設定しています。キーは省略することが可能で省略した場合は自動でキーが設定されます。その場合のキーはファイル名と行番号を利用して作成されます。
+
+posts というキーを設定して取得した値は useNuxtApp().payload.data からアクセスすることができます。
+```
+<script setup>
+const { data: posts, error } = await useAsyncData(() =>
+  $fetch('https://jsonplaceholder.typicode.com/posts/')
+);
+console.log(useNuxtApp().payload.data);
+</script>
+<template>
+  <div>
+    <h1>Posts一覧</h1>
+    <p v-if="error">{{ error }}</p>
+    <ul>
+      <li v-for="post in posts" :key="post.id">{{ post.title }}</li>
+    </ul>
+  </div>
+</template>
+```
+
+### $fetchについて
+useAsyncDataの中で突然出てきた$fetch関数について確認しておきます。
+
+`$fetch`はヘルパー関数で内部ではofetchライブラリを利用しています。ofetchライブラリはNode, ブラウザ、ワーカー上で利用できるfetch APIです。
+
+useFetchではSSRに対応しており、サーバ側のみfetchが行われますが$fetchを利用した場合はサーバ側、クライアント側で2度fetchが行われます。そのためuseFetchをすべての場面で使うのかというとそうではなくドキュメントでは$fetchの利用場所として下記のように記載されています。
+
+`$fetch` is great to make network requests based on user interaction.
+
+**クライアント側でのみ実行されるユーザのインタクションに伴うリクエストは`$fetch`を利用するのが適しています。**
+
+#### fetch関数との違い
+fetch 関数であれば使い慣れている人もいると思いますので fetch 関数との代表的な違いを確認しておきます。
+
+fetch 関数では取得したデータを JSON Parse する必要(response.json())がありますが ofetch では自動で行ってくれます。
+```
+//$fetch関数
+const posts = ref([]);
+const data = await $fetch('https://jsonplaceholder.typicode.com/posts/');
+posts.value = data;
+
+//fetch関数
+const posts = ref([]);
+const response = await fetch('https://jsonplaceholder.typicode.com/posts/');
+const data = await response.json();
+posts.value = data;
+```
+fetchでPOSTリクエストを実行する際にJSON.stringifyでJSON形式のデータに変換しますがofetchでは自動で行ってくれます。
+```
+//$fetch関数
+const data = await $fetch('/api/user', {
+  method: 'POST',
+  body: { name: 'John Doe' },
+});
+
+//fetch関数
+const response = await fetch('/api/user', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ name: 'John Doe' }),
+});
+```
+その他には存在しないURLにアクセスした場合にresponse.okがfalseの場合エラー処理を行ってくれたりinterceptorsやauto retryやbaseURLを設定することもできます。
+
+クライアント側で行うフォームのPOSTリクエストなどでも$fetchを利用されます。
+
+### useLazyFetch
+useFetchとuseLazyFetchの違いを確認するためにuseFetchのコードをuseLazyFetchのコードに書き換えます。
+```
+<script setup>
+const { data: posts, error } = await useLazyFetch(
+  'https://jsonplaceholder.typicode.com/posts/'
+);
+</script>
+<template>
+  <div>
+    <h1>Posts一覧</h1>
+    <p v-if="error">{{ error }}</p>
+    <ul>
+      <li v-for="post in posts" :key="post.id">
+        <NuxtLink :to="`/posts/${post.id}`">{{ post.title }}</NuxtLink>
+      </li>
+    </ul>
+  </div>
+</template>
+```
+最初に”/“にアクセスして上部のリンクから/posts に移動します。現在の設定では useFetch から useLazyFetch に変更しても違いはわかりません。
+
+違うを明確にするため JSONPlaceHolder からのデータ取得の時間が遅延するようにブラウザのデベロッパーツールでネットワークのスピードを”Slow 3G”に変更します。
+
+再度動作確認を行うと useFetch の場合は/posts にアクセスするとすぐに posts ページの画面が表示されるわけではなくしばらく時間が経過すると”Post 一覧”と取得したデータが同時に表示されます。useLazyFetch の場合は最初に”Post 一覧”が表示されてからその後取得したデータが表示されます。
+
+ドキュメントを確認すると”By default, useFetch blocks navigation until its async handler is resolved.”と記載されており、useFetch が async handler が resolve されるまでナビゲーションをブロックしているためデータの取得が完了するまでページへの移動が行われません。useLazyFetch ではナビゲーションがブロックされないのでページに移動して”Post 一覧”がデータの取得が完了する前に表示されることになります。
+
+useFetch のオプションの lazy を true に設定することで useLazyFetch と同じ動作になります。
+```
+const { data: posts, error } = await useFetch(
+  'https://jsonplaceholder.typicode.com/posts/',
+  {
+    lazy: true,
+  }
+);
+```
+useLazyFetchから戻されるpendingを利用することでデータ取得中のみローディングを表示させることができます。
+```
+<script setup>
+const {
+  data: posts,
+  error,
+  pending,
+} = await useLazyFetch('https://jsonplaceholder.typicode.com/posts/');
+</script>
+<template>
+  <div>
+    <h1>Posts一覧</h1>
+    <p v-if="error">{{ error }}</p>
+    <p v-if="pending">Loading...</p>
+    <ul>
+      <li v-for="post in posts" :key="post.id">
+        <NuxtLink :to="`/posts/${post.id}`">{{ post.title }}</NuxtLink>
+      </li>
+    </ul>
+  </div>
+</template>
+```
+
+### useLazyAsyncData
+useLazyFetch関数はuseLazyAsyncData関数と$fetch関数を利用を便利にしたラッパーです。そのためuseLazyFetch関数と同じ処理をuseLazyAsyncData関数と$fetch関数で行うことができます。
+```
+<script setup>
+const {
+  data: posts,
+  error,
+  pending,
+} = await useLazyAsyncData('posts', () =>
+  $fetch('https://jsonplaceholder.typicode.com/posts/')
+);
+</script>
+<template>
+  <div>
+    <h1>Posts一覧</h1>
+    <p v-if="error">{{ error }}</p>
+    <p v-if="pending">Loading...</p>
+    <ul>
+      <li v-for="post in posts" :key="post.id">
+        <NuxtLink :to="`/posts/${post.id}`">{{ post.title }}</NuxtLink>
+      </li>
+    </ul>
+  </div>
+</template>
+```
+
