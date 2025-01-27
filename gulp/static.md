@@ -1,5 +1,8 @@
 # gulpを使った静的ページのセットアップ
 
+## 概要
+gulpを使ってdart-sassのコンパイル、自動リロード、画像圧縮、js圧縮を行う
+
 ## バージョン
 node v20
 
@@ -165,4 +168,9 @@ export default gulp.series(
   jsMinify,
   gulp.parallel(browserSyncFunc, watchFiles)
 );
+```
+
+## 起動コマンド
+```
+yarn gulp
 ```
