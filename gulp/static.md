@@ -2,9 +2,11 @@
 
 ## バージョン
 node v20
+
 gulp5
 
 ## プラグイン
+```json
 "browser-sync": "^3.0.3",
 "gulp": "^5.0.0",
 "gulp-autoprefixer": "7",
@@ -26,6 +28,7 @@ gulp5
 "imagemin-optipng": "^8.0.0",
 "imagemin-pngquant": "^10.0.0",
 "imagemin-svgo": "^11.0.1"
+```
 
 ## ディレクトリ構造
 ```
@@ -41,10 +44,11 @@ gulpfile.mjs
 ```
 
 ## gulpfile
-拡張子はmjs
+拡張子は`mjs`
+
 package.jsonに`"type": "module"`を記述
 
-```
+```mjs
 // gulpfile.mjs
 import gulp from 'gulp';
 import { src, dest, watch, series, parallel } from 'gulp';
@@ -55,7 +59,6 @@ import imageminOptipng from 'imagemin-optipng';
 import imageminGifsicle from 'imagemin-gifsicle';
 import mozjpeg from 'imagemin-mozjpeg';
 import pngquant from 'imagemin-pngquant';
-// import imageminWebp from 'imagemin-webp';
 import gulpDartSass from 'gulp-dart-sass';
 import sassGlob from 'gulp-sass-glob-use-forward';
 import autoprefixer from 'gulp-autoprefixer';
