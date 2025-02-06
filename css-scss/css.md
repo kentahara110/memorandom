@@ -92,47 +92,84 @@ marginなどであけるよりもgapで簡単に開けれる
 ## アコーディオンメニュー
 html
 ```html
-<div class="c-faq">
+<div class="c-faq__wrap">
     <details class="c-faq__item">
-        <summary>アコーディオンのデザイン</summary>
-        <p>下線だけのシンプルなアコーディオンメニュー。クセがなくどんなサイトでも使いやすいのが特徴です。</p>
+        <summary>
+            <img src="" alt="Q. ">
+            <p>
+                アコーディオンのデザイン
+            </p>
+        </summary>
+        <div class="c-faq__item__content">
+            <img src="" alt="A. ">
+            <p>
+                下線だけのシンプルなアコーディオンメニュー。クセがなくどんなサイトでも使いやすいのが特徴です。
+            </p>
+        </div>
     </details>
     <details class="c-faq__item">
-        <summary>アコーディオンのデザイン</summary>
-        <p>下線だけのシンプルなアコーディオンメニュー。クセがなくどんなサイトでも使いやすいのが特徴です。</p>
+        <summary>
+            <img src="" alt="Q. ">
+            <p>
+                アコーディオンのデザイン
+            </p>
+        </summary>
+        <div class="c-faq__item__content">
+            <img src="" alt="A. ">
+            <p>
+                下線だけのシンプルなアコーディオンメニュー。クセがなくどんなサイトでも使いやすいのが特徴です。
+            </p>
+        </div>
     </details>
 </div>
 ```
 scss
 ```scss
 .c-faq{
+    &__wrap{
+        width: 1073px;
+        margin: 0 auto;
+        margin-top: 48px;
+        padding: 0 35px;
+    }
     &__item{
         border-bottom: 1px solid #d0d0d0;
         summary{
             position: relative;
             display: flex;
-            justify-content: space-between;
+            justify-content: start;
             align-items: center;
-            padding: 1em 2em;
+            padding: 16px 0;
             color: #333333;
             cursor: pointer;
+            width: 100%;
             &::after{
-                transform: translateY(-25%) rotate(45deg);
-                width: 7px;
-                height: 7px;
-                margin-left: 10px;
-                border-bottom: 3px solid #333333b3;
-                border-right: 3px solid #333333b3;
+                position: absolute;
+                top: 50%;
+                right: 12px;
+                transform: translate(0, -50%);
+                background-image: url(../img/accordion_plus.svg);
+                background-position: center;
+                background-size: contain;
+                background-repeat: no-repeat;
+                width: 16px;
+                height: 16px;
+                margin-right: 10px;
                 content: '';
-                transition: transform .3s;
             }
         }
         &[open]{
             summary{
                 &::after{
-                    transform: rotate(225deg);
+                    background-image: url(../img/accordion_minus.svg);
+
                 }
             }
+        }
+        &__content{
+            display: flex;
+            align-items: center;
+            padding-bottom: 29px;
         }
     }
 }
