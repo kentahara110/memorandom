@@ -26,6 +26,14 @@ img{
 }
 ```
 
+## 画像の下部の隙間をなくす
+
+```css
+img{
+	vertical-align:top;
+}
+```
+
 ## gridのエリア指定
 ```css
 .親要素{
