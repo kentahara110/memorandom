@@ -88,3 +88,52 @@ marginなどであけるよりもgapで簡単に開けれる
     }    
 }
 ```
+
+## アコーディオンメニュー
+html
+```html
+<div class="c-faq">
+    <details class="c-faq__item">
+        <summary>アコーディオンのデザイン</summary>
+        <p>下線だけのシンプルなアコーディオンメニュー。クセがなくどんなサイトでも使いやすいのが特徴です。</p>
+    </details>
+    <details class="c-faq__item">
+        <summary>アコーディオンのデザイン</summary>
+        <p>下線だけのシンプルなアコーディオンメニュー。クセがなくどんなサイトでも使いやすいのが特徴です。</p>
+    </details>
+</div>
+```
+scss
+```scss
+.c-faq{
+    &__item{
+        border-bottom: 1px solid #d0d0d0;
+        summary{
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1em 2em;
+            color: #333333;
+            cursor: pointer;
+            &::after{
+                transform: translateY(-25%) rotate(45deg);
+                width: 7px;
+                height: 7px;
+                margin-left: 10px;
+                border-bottom: 3px solid #333333b3;
+                border-right: 3px solid #333333b3;
+                content: '';
+                transition: transform .3s;
+            }
+        }
+        &[open]{
+            summary{
+                &::after{
+                    transform: rotate(225deg);
+                }
+            }
+        }
+    }
+}
+```
