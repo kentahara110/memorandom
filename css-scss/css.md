@@ -174,3 +174,15 @@ scss
     }
 }
 ```
+
+## fixedのスクロール
+`position: fixed;`の要素に`overflow-y: scroll;`をつける
+
+## 文字の禁則処理
+```css
+body {
+  overflow-wrap: anywhere; /* 収まらない場合に折り返す */
+  word-break: normal; /* 単語の分割はデフォルトに依存 */
+  line-break: strict; /* 禁則処理を厳格に適用 */
+}
+```
