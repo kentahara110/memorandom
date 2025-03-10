@@ -138,6 +138,13 @@ html
 ```
 scss
 ```scss
+// Safariで矢印が出るので必ずこれを入れる
+summary{
+    list-style: none;
+}
+summary::-webkit-details-marker {
+    display:none;
+}
 .c-faq{
     &__wrap{
         width: 1073px;
