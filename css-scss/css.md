@@ -80,7 +80,21 @@ span{
 ```
 
 ## 文字にオリジナルの下線を引きたい場合など
-擬似要素を使って文字に下線や背景など様々なスタイルを割り当てれる
+①バックグラウンドカラーをつける
+
+```scss
+span{
+        position: relative;
+        width: fit-content;
+        line-height: 40px;
+        background-color: #F6F13D; // 文字全体をカラーマーカー
+        background: linear-gradient(transparent 50%, #F6F13D 50%);　// 半分の高さにしたい場合
+    }
+```
+
+②擬似要素を使って文字に下線や背景など様々なスタイルを割り当てれる
+**折り返しには対応できないので文字幅固定の場合のみ**
+
 ```scss
 &__keyword{
     h3{ // 下線を入れたい要素

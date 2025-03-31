@@ -1,0 +1,208 @@
+なるほど、サーバーでは /dementia_world/ に WordPress がインストールされているんですね。
+それなら、ローカル環境の Docker でも同じ構成にすれば動作が一致する ので、そのように修正しましょう！
+
+✅ 修正後の docker-compose.yml（/dementia_world/ に WordPress を配置）
+yaml
+コピーする
+編集する
+version: '3'
+
+services:
+  db:
+    platform: linux/amd64 # M1/M2 Mac対応
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: on-failure:5
+    ports:
+      - "${LOCAL_DB_PORT:-3306}:3306"
+    container_name: "${PRODUCTION_NAME:-wp}_db"
+    environment:
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    container_name: "${PRODUCTION_NAME:-wp}_wordpress"
+    ports:
+      - "${LOCAL_SERVER_PORT:-8080}:80"
+    restart: on-failure:5
+    volumes:
+      - ./dementia_world:/var/www/html/dementia_world  # `/dementia_world/` に配置
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+
+volumes:
+  db_data:
+🔍 変更点
+修正前	修正後
+/var/www/html に WordPress を配置	/var/www/html/dementia_world に配置
+http://localhost:8080/ でアクセス	http://localhost:8080/dementia_world/ でアクセス
+サーバー環境と異なるディレクトリ構成	サーバーと同じ構成 なので本番と一致
+🚀 インストール手順
+① 既存の WordPress を削除
+sh
+コピーする
+編集する
+docker-compose down -v  # すべて削除（DB含む）
+rm -rf dementia_world db_data  # 古いデータを削除
+② dementia_world フォルダを作成
+sh
+コピーする
+編集する
+mkdir dementia_world
+③ WordPress を再インストール
+sh
+コピーする
+編集する
+docker-compose up -d
+④ WordPress セットアップ
+http://localhost:8080/dementia_world/ にアクセス
+
+言語を選択
+
+データベース情報を入力
+
+DB名: wordpress
+
+ユーザー名: wordpress
+
+パスワード: wordpress
+
+データベースホスト: db
+
+WordPressのサイト情報を入力
+
+インストール完了 🎉
+
+🎯 この方法のメリット
+✅ サーバーと同じ /dementia_world/ 配下に WordPress を配置
+✅ Apache の設定変更不要！
+✅ 環境変数が .env に未定義でもデフォルト値で動作する！
+✅ 本番と同じ URL (http://localhost:8080/dementia_world/) で開発できる
+
+🔥 まとめ
+サーバーの /dementia_world/ に合わせるには、
+Docker の volumes を /var/www/html/dementia_world にマウントするのが正解 です！ 🚀
+
+
+
+① WordPress ディレクトリの権限を修正
+コンテナ内で以下のコマンドを実行し、dementia_world ディレクトリの所有者を www-data に変更します。
+
+sh
+コピーする
+編集する
+chown -R www-data:www-data /var/www/html/dementia_world
+chmod -R 755 /var/www/html/dementia_world
+その後、設定が反映されているか確認：
+
+sh
+コピーする
+編集する
+ls -l /var/www/html
+ls -l /var/www/html/dementia_world
+www-data www-data になっていればOK！
+もし root になっていたら、もう一度 chown を試してください。
+
+② Apache の設定を確認
+コンテナ内で apache2ctl -S を実行し、Apache の設定を確認してください。
+
+sh
+コピーする
+編集する
+apache2ctl -S
+もし /var/www/html 以外の DocumentRoot が設定されていた場合、000-default.conf を修正する必要があります。
+まず、設定ファイルを開きます：
+
+sh
+コピーする
+編集する
+nano /etc/apache2/sites-available/000-default.conf
+以下のように修正（<Directory> の設定を追加）
+
+apache
+コピーする
+編集する
+<VirtualHost *:80>
+    DocumentRoot /var/www/html
+
+    <Directory /var/www/html/dementia_world>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+保存 (Ctrl + X, Y, Enter) したら、Apache を再起動します。
+
+sh
+コピーする
+編集する
+service apache2 restart
+③ .htaccess を確認
+WordPress の .htaccess ファイルが正しく存在するか確認：
+
+sh
+コピーする
+編集する
+ls -l /var/www/html/dementia_world/.htaccess
+もし .htaccess がない場合、新しく作成します。
+
+sh
+コピーする
+編集する
+nano /var/www/html/dementia_world/.htaccess
+以下をコピーして貼り付け：
+
+apache
+コピーする
+編集する
+# BEGIN WordPress
+RewriteEngine On
+RewriteBase /dementia_world/
+RewriteRule ^index\.php$ - [L]
+
+# add a trailing slash to /wp-admin
+RewriteRule ^wp-admin$ wp-admin/ [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /dementia_world/index.php [L]
+# END WordPress
+保存 (Ctrl + X, Y, Enter) したら、パーミッションを修正：
+
+sh
+コピーする
+編集する
+chown www-data:www-data /var/www/html/dementia_world/.htaccess
+chmod 644 /var/www/html/dementia_world/.htaccess
+④ mod_rewrite を有効化
+.htaccess のリダイレクトが機能しない場合、mod_rewrite を有効にする必要があります。
+
+sh
+コピーする
+編集する
+a2enmod rewrite
+service apache2 restart
+⑤ Apache のエラーログを確認
+もし 403 Forbidden が解決しない場合、エラーログを確認してください。
+
+sh
+コピーする
+編集する
+tail -n 20 /var/log/apache2/error.log
+エラー内容を見れば、どこに問題があるか特定できます。
+
+🚀 最終確認
+これらの設定を適用したら、ブラウザで http://localhost:8080/dementia_world/ にアクセスしてください。
+もし 403 Forbidden が解決しない場合、エラーログを貼ってもらえれば、具体的な解決策を考えます！
