@@ -89,6 +89,7 @@ span{
         line-height: 40px;
         background-color: #F6F13D; // 文字全体をカラーマーカー
         background: linear-gradient(transparent 50%, #F6F13D 50%);　// 半分の高さにしたい場合
+        display: inline; // インライン要素でない場合はインラインにする
     }
 ```
 
