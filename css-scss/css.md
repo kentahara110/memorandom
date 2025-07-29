@@ -88,7 +88,8 @@ span{
         width: fit-content;
         line-height: 40px;
         background-color: #F6F13D; // 文字全体をカラーマーカー
-        background: linear-gradient(transparent 50%, #F6F13D 50%);　// 半分の高さにしたい場合
+        background: linear-gradient(transparent 50%, #F6F13D 50%); // 半分の高さにしたい場合
+        padding-bottom: 5px; // 下線と文字の間を開けたい場合
         display: inline; // インライン要素でない場合はインラインにする
     }
 ```
