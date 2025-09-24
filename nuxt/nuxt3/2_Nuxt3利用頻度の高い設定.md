@@ -230,6 +230,78 @@ RewriteRule ^.*$ 404.html
 </IfModule>
 ```
 
+## メタタグ nuxt.config.tsのapp:[]内に
+```
+head: {
+    charset: 'utf-8',
+    viewport: 'width=device-width,initial-scale=1',
+    title: '認知機能タイプチェック',
+    meta: [
+                { name: 'description', content: '認知症世界の歩き⽅「MNTI」は、30の質問に答えることであなたの認知機能の凸凹を可視化し、関連する知識と対処法を学ぶことができるウェブサービスです。' },
+                { name: 'format-detection', content: 'telephone=no' },
+                // OGP
+                { property: 'og:site_name', content: '認知機能タイプチェック' },
+                { property: 'og:url', content: 'https://issueplusdesign.jp/dementia_world/mnti/' },
+                { property: 'og:type', content: 'website' },
+                { property: 'og:title', content: '認知機能タイプチェック' },
+                { property: 'og:description', content: '認知症世界の歩き⽅「MNTI」は、30の質問に答えることであなたの認知機能の凸凹を可視化し、関連する知識と対処法を学ぶことができるウェブサービスです。' },
+                { property: 'og:image', content: 'https://issueplusdesign.jp/dementia_world/mnti/og.png' },
+                { property: 'og:locale', content: 'ja_JP' },
+                // Twitter
+                { name: 'twitter:card', content: 'summary_large_image' },
+                { name: 'twitter:description', content: '認知症世界の歩き⽅「MNTI」は、30の質問に答えることであなたの認知機能の凸凹を可視化し、関連する知識と対処法を学ぶことができるウェブサービスです。' },
+                { name: 'twitter:image:src', content: 'https://issueplusdesign.jp/dementia_world/mnti/og.png' }
+            ],
+    // link: [{ rel: 'icon', href: '/icon.png' }],
+    script: [
+        {
+            hid: 'adobe-fonts',
+            innerHTML: `(function(d) {
+                var config = {
+                kitId: 'ouz2hmf',
+                scriptTimeout: 3000,
+                async: true
+                },
+                h=d.documentElement,
+                t=setTimeout(function(){
+                h.className=h.className.replace(/\\bwf-loading\\b/g,"")+" wf-inactive";
+                },config.scriptTimeout),
+                tk=d.createElement("script"),
+                f=false,
+                s=d.getElementsByTagName("script")[0],
+                a;
+                h.className+=" wf-loading";
+                tk.src='https://use.typekit.net/'+config.kitId+'.js';
+                tk.async=true;
+                tk.onload=tk.onreadystatechange=function(){
+                a=this.readyState;
+                if(f||a&&a!="complete"&&a!="loaded")return;
+                f=true;
+                clearTimeout(t);
+                try{Typekit.load(config)}catch(e){}
+                };
+                s.parentNode.insertBefore(tk,s)
+            })(document);`,
+            type: 'text/javascript'
+        },
+        {
+            src: "https://www.googletagmanager.com/gtag/js?id=G-29Z0DCE3RK",
+            async: true,
+        },
+        {
+            children: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-29Z0DCE3RK');
+            `,
+            type: "text/javascript",
+        },
+    ],
+},
+```
+
+
 ## SEO対策
 [@nuxtjs/seoの推奨構成](https://nuxtseo.com/docs/nuxt-seo/guides/using-the-modules)
 ```
